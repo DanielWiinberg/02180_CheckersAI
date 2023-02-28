@@ -1,1 +1,1 @@
-# 02180_LaserChessAI
+# 02180_CheckersAI
