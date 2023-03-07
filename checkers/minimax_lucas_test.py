@@ -18,5 +18,4 @@ class Minimax:
 
         game_board = copy.deepcopy(game)
 
-
         for move in Game.moves:
