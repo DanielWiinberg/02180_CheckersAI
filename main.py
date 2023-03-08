@@ -39,9 +39,9 @@ def main():
                 row, col = get_row_col_from_mouse(pos)
                 game.select(row, col)
                 
-                print(board.board) # loop igennem
-                piece = board.get_piece(row,col)
-                print(board.get_valid_moves(piece))
+                #print(board.board) # loop igennem
+                #piece = board.get_piece(row,col)
+                #print(board.get_valid_moves(piece))
 
         game.update()
     
