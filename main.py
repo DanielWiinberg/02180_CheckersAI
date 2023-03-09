@@ -1,7 +1,8 @@
 import pygame
-from checkers.constants import WIDTH, HEIGHT, SQUARE_SIZE, RED
+from checkers.constants import WIDTH, HEIGHT, SQUARE_SIZE, RED, EDGE_SIZE
 from checkers.game import Game
 from checkers.board import Board
+pygame.init()
 
 FPS = 60
 
@@ -12,8 +13,8 @@ pygame.display.set_caption('Checkers')
 
 def get_row_col_from_mouse(pos):
     x, y = pos
-    row = y // SQUARE_SIZE
-    col = x // SQUARE_SIZE
+    row = (y- EDGE_SIZE) // SQUARE_SIZE
+    col = (x-EDGE_SIZE) // SQUARE_SIZE 
     return row, col
 
 

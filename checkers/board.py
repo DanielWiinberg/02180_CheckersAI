@@ -1,19 +1,42 @@
 import pygame
-from .constants import BLACK, ROWS, RED, SQUARE_SIZE, COLS, WHITE, BROWN, BEIGE
+from .constants import BLACK, ROWS, RED, SQUARE_SIZE, COLS, GREY, WHITE, BROWN, BEIGE, DARK_BLUE, EDGE_SIZE, WIDTH_BOARD, HEIGHT_BOARD, HEIGHT, WIDTH, SCORE_BOX_WIDTH,PADDING,OUTLINE
 from .piece import Piece
+from .score import Score
 
 class Board:
     def __init__(self):
         self.board = []
         self.red_left = self.white_left = 12
+        self.red_score = self.white_score = 0
         self.red_kings = self.white_kings = 0
         self.create_board()
     
     def draw_squares(self, win):
-        win.fill(BROWN)
+        win.fill(DARK_BLUE)
+        pygame.draw.rect(win, BROWN, (EDGE_SIZE,EDGE_SIZE,WIDTH_BOARD, HEIGHT_BOARD))
         for row in range(ROWS):
             for col in range(row % 2, COLS, 2):
-                pygame.draw.rect(win, BEIGE, (row*SQUARE_SIZE, col *SQUARE_SIZE, SQUARE_SIZE, SQUARE_SIZE))
+                pygame.draw.rect(win, BEIGE, (row*SQUARE_SIZE+EDGE_SIZE, col *SQUARE_SIZE+EDGE_SIZE, SQUARE_SIZE, SQUARE_SIZE))
+                
+    def draw_scores(self, win):
+        SCORE_BOX_LEFT = 2*EDGE_SIZE+WIDTH_BOARD
+        SCORE_BOX_CENTER = SCORE_BOX_LEFT+SCORE_BOX_WIDTH//2
+        
+        font = pygame.font.SysFont("moolboran", 26)
+        label = font.render("WHITE PLAYER CAPTURES", 1, WHITE)
+        text_rect = label.get_rect(center=(SCORE_BOX_CENTER,2* EDGE_SIZE))
+        win.blit(label, text_rect)
+        label = font.render("RED PLAYER CAPTURES", 1, WHITE)
+        text_rect = label.get_rect(center=(SCORE_BOX_CENTER,2* EDGE_SIZE+HEIGHT_BOARD//2))
+        win.blit(label, text_rect)
+        
+        Score.draw_scores(self, win, RED)
+        Score.draw_scores(self, win, WHITE)
+        
+        # radius = SQUARE_SIZE//2 - PADDING
+        # pygame.draw.circle(win, GREY, (self.x, self.y), radius + OUTLINE)
+        # pygame.draw.circle(win, self.color, (self.x, self.y), radius)
+        
 
     def move(self, piece, row, col):
         self.board[piece.row][piece.col], self.board[row][col] = self.board[row][col], self.board[piece.row][piece.col]
@@ -45,6 +68,7 @@ class Board:
         
     def draw(self, win):
         self.draw_squares(win)
+        self.draw_scores(win)
         for row in range(ROWS):
             for col in range(COLS):
                 piece = self.board[row][col]
@@ -57,8 +81,10 @@ class Board:
             if piece != 0:
                 if piece.color == RED:
                     self.red_left -= 1
+                    self.white_score += 1
                 else:
                     self.white_left -= 1
+                    self.red_score += 1
     
     def winner(self):
         if self.red_left <= 0:
