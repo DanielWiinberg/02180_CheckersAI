@@ -16,7 +16,7 @@ s_init = [s_1, s_2]
 
 
 def mini_max(board_state, max_player, turn_color, depth, depth_limit):
-    print('---' , depth, turn_color, '---')
+    print('--- detph ' , depth, turn_color, '---')
     best_score_for_each_action = []
     actions_pieces = []
     
@@ -30,14 +30,16 @@ def mini_max(board_state, max_player, turn_color, depth, depth_limit):
             actions = mv.get_moves(board_state, piece)
             print('Piece: ', piece, 'Actions: ', actions)
             for action in actions:
-                new_board_state, _ = mv.move(board_state, piece, actions, action)
-                
+                print('Piece: ', piece, 'Action: ', action)
+                temp_board_state = deepcopy(board_state)        # maybe not placed correctly
+                new_board_state, _ = mv.move(temp_board_state, piece, actions, action)
                 if depth == 0: #Only appending the piece and actions at depth 0
                     actions_pieces.append( (piece, action) )
                 print('depth: ', depth, 'action pieces - inner: ', actions_pieces)
 
                 score, _ = mini_max(new_board_state, max_player, mv.change_turn(turn_color), depth+1, depth_limit)
                 best_score_for_each_action.append(score)
+                turn_color = mv.change_turn(turn_color)
                 depth -= 1
     
 
