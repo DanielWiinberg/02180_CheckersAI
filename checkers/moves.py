@@ -80,11 +80,18 @@ def get_right(board_matrix, row, col, dir, piece, captured):
 
               
 def move(board_state, piece, moves ,move):
+    print("Move piece:")
+    
+    #print(board_state)
+    print(piece)
+    print(moves)
+    print(move)
     row, col = piece.row, piece.col
     new_row, new_col = move[0], move[1]
     captures = moves[move]
     
-    king = board_state[row][col].king
+    #king = board_state[row][col].king
+    king = False
     if new_row == ROWS - 1 or new_row == 0:
         king = True
     

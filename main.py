@@ -12,7 +12,7 @@ from checkers.piece import Piece
 
 
 FPS = 60
-RECURSION_LIMIT = 6
+RECURSION_LIMIT = 3 
 
 WIN = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption('Checkers')
@@ -47,6 +47,7 @@ def main():
     n_white_pieces = N_PIECES
     n_red_pieces = N_PIECES
     turn = RED
+    max_player = WHITE
     while run:
         clock.tick(FPS)                
         #board.draw_pieces(WIN, board_matrix)     
@@ -54,38 +55,55 @@ def main():
             if event.type == pygame.QUIT:
                 run = False
             
-            if event.type == pygame.MOUSEBUTTONDOWN:
-                pos = pygame.mouse.get_pos()
-                row, col = get_row_col_from_mouse(pos)
-                
-                print(mini_max(board_state, turn, turn, 0, RECURSION_LIMIT))
-                
-                if moves:
-                    if (row,col) in moves:
-                        piece = board_state[select[0]][select[1]]
-                        move = (row,col)
-                        board_state,n_captures = mv.move(board_state, piece, moves, move) 
-                        if turn == RED:
-                            n_white_pieces = n_white_pieces - n_captures
-                        else: 
-                            n_red_pieces = n_red_pieces - n_captures
-                        print(board_state) 
-                        turn = mv.change_turn(turn)
-                        moves = []
-                        select = []
-                        continue
-                           
-                if board_state[row][col]:
-                    piece = board_state[row][col]
+            if max_player == turn:
+                max_score, max_action = mini_max(board_state, turn, turn, 0, RECURSION_LIMIT)
+                piece = max_action[0]
+                move = max_action[1]
+                moves = mv.get_moves(board_state, piece)
+                board_state,n_captures = mv.move(board_state, piece, moves, move) 
+                if turn == RED:
+                    n_white_pieces = n_white_pieces - n_captures
+                else: 
+                    n_red_pieces = n_red_pieces - n_captures
+                #print(board_state) 
+                turn = mv.change_turn(turn)
+                moves = []
+                select = []
+                continue
+                 
+            else:
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    pos = pygame.mouse.get_pos()
+                    row, col = get_row_col_from_mouse(pos)
                     
-                    if piece.color == turn:
                     
-                        moves = mv.get_moves(board_state, piece)
-                        if moves:
-                            select = [row,col]
-                        print(piece)
-                        print(row, col)
-                        print(moves)
+                    if moves:
+                        if (row,col) in moves:
+                            piece = board_state[select[0]][select[1]]
+                            move = (row,col)
+                            board_state,n_captures = mv.move(board_state, piece, moves, move) 
+                            if turn == RED:
+                                n_white_pieces = n_white_pieces - n_captures
+                            else: 
+                                n_red_pieces = n_red_pieces - n_captures
+                            
+                            print(board_state) 
+                            turn = mv.change_turn(turn)
+                            moves = []
+                            select = []
+                            continue
+                            
+                    if board_state[row][col]:
+                        piece = board_state[row][col]
+                        
+                        if piece.color == turn:
+                        
+                            moves = mv.get_moves(board_state, piece)
+                            if moves:
+                                select = [row,col]
+                            print(piece)
+                            print(row, col)
+                            print(moves)
                 
         
         

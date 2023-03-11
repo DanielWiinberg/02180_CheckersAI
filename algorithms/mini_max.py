@@ -15,30 +15,29 @@ s_2 = [s_5, s_6]
 s_init = [s_1, s_2]
 
 
-def mini_max(board_state, max_player, turn_color, depth, depth_limit):
+
+                
+def mini_max1(board_state, max_player, turn_color, depth, depth_limit):
     best_score_for_each_action = []
     actions_pieces = []
-    
-    if depth == depth_limit: #TODO: Stop condition if won the game
-        best_score_for_each_action.append(utility_function(board_state, max_player))
-    else:
-        pieces = get_pieces(board_state, turn_color)
-        
-        for piece in pieces:
-            actions = mv.get_moves(board_state, piece)
+    pieces = get_pieces(board_state, turn_color)
+    for piece in pieces:
+        actions = mv.get_moves(board_state, piece)
+        if actions:
             print('Actions: ')
             print(actions)
             for action in actions:
                 new_board_state, _ = mv.move(board_state, piece, actions, action)
-                
                 actions_pieces.append( (piece, action) )
                 
-                score, _ = mini_max(new_board_state, max_player, mv.change_turn(turn_color), depth+1, depth_limit) 
-                best_score_for_each_action.append(score)
-                depth -= 1
-    
+                if  depth < depth_limit:
+                    depth +=1
+                    score, _ = mini_max(new_board_state, max_player, mv.change_turn(turn_color), depth+1, depth_limit) 
+                    best_score_for_each_action.append(score)
+                    depth -= 1
+                else:
+                    best_score_for_each_action.append(utility_function(board_state, max_player))
 
-    
     print('best scores: ')
     print(best_score_for_each_action)
     
@@ -60,9 +59,52 @@ def mini_max(board_state, max_player, turn_color, depth, depth_limit):
         print(actions_pieces)
         
         if len( actions_pieces ) == 0:
-            return (0, None)
+            return (None, None)
         min_action = actions_pieces[min_index]
         return (min_, min_action)
+
+
+
+def mini_max(board_state, max_player, turn_color, depth, depth_limit):
+    best_scores = {}
+    
+    if depth == depth_limit: # Stop condition if won the game
+        best_scores[None] = utility_function(board_state, max_player)
+    else:
+        pieces = get_pieces(board_state, turn_color)
+        
+        pieces = [piece for piece in pieces if mv.get_moves(board_state, piece)] # Only keep the pieces that can actually move
+        for piece in pieces:
+            actions = mv.get_moves(board_state, piece)
+            for action in actions:
+                print("HERE!!!!")
+                print(board_state)
+                new_board_state = deepcopy(board_state)
+                new_board_state, _ = list(mv.move(new_board_state, piece, actions, action))
+                print(new_board_state)
+                score, _ = mini_max(new_board_state, max_player, mv.change_turn(turn_color), depth + 1, depth_limit) 
+                best_scores[(piece, action)] = score
+
+    if (depth % 2) == 0:
+        max_score = max(best_scores.values())
+        max_actions = [action for action, score in best_scores.items() if score == max_score]
+        if not max_actions:
+            return None, None
+        max_action = max_actions[0]
+        
+        print('! max_score: ', max_score)
+        print('! max_action: ', max_action)
+        return max_score, max_action
+
+    else:
+        min_score = min(best_scores.values())
+        min_actions = [action for action, score in best_scores.items() if score == min_score]
+        if not min_actions:
+            return None, None
+        min_action = min_actions[0]
+        print('! min_score: ', min_score)
+        print('! min_action: ', min_action)
+        return min_score, min_action
     
 
 #print(recursive_loop(s_init, 0, 2))
