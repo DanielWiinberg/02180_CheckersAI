@@ -3,19 +3,21 @@ from .constants import BLACK, ROWS, RED, GREEN, SQUARE_SIZE, COLS, GREY, WHITE, 
 from .piece import Piece
 
 
-def get_moves(board_matrix, row, col, turn):
-    piece  = board_matrix[row][col]
+def get_moves(board_matrix, piece):
+    row = piece.row
+    col = piece.col
+    turn = piece.color
+    
     moves = {}
-    if piece.color == turn:
-        if piece.color == RED or piece.king:
-            direction=-1
-            moves.update(get_left(board_matrix,row,col, direction, piece, []))
-            moves.update(get_right(board_matrix,row,col, direction, piece, []))
-            
-        if piece.color == WHITE or piece.king:
-            direction=1
-            moves.update(get_left(board_matrix,row,col, direction, piece, [])) 
-            moves.update(get_right(board_matrix,row,col, direction, piece, [])) 
+    if piece.color == RED or piece.king:
+        direction=-1
+        moves.update(get_left(board_matrix,row,col, direction, piece, []))
+        moves.update(get_right(board_matrix,row,col, direction, piece, []))
+        
+    if piece.color == WHITE or piece.king:
+        direction=1
+        moves.update(get_left(board_matrix,row,col, direction, piece, [])) 
+        moves.update(get_right(board_matrix,row,col, direction, piece, [])) 
           
     return moves
 
@@ -77,27 +79,37 @@ def get_right(board_matrix, row, col, dir, piece, captured):
     
 
               
-def move(board_matrix, captures, row, col, new_row, new_col):
-    king = board_matrix[row][col].king
+def move(board_state, piece, moves ,move):
+    row, col = piece.row, piece.col
+    new_row, new_col = move[0], move[1]
+    captures = moves[move]
+    
+    king = board_state[row][col].king
     if new_row == ROWS - 1 or new_row == 0:
         king = True
     
-    board_matrix[new_row][new_col] = Piece(new_row, new_col, board_matrix[row][col].color, board_matrix[row][col].name, king) 
-    board_matrix[row][col] = 0
+    board_state[new_row][new_col] = Piece(new_row, new_col, board_state[row][col].color, board_state[row][col].name, king) 
+    board_state[row][col] = 0
     n_captures = 0
     for capture in captures:
         print("captured")
         print(capture)
         n_captures += 1
-        board_matrix[capture.row][capture.col] = 0        
+        board_state[capture.row][capture.col] = 0        
     
 
                 
-    return board_matrix,n_captures
+    return board_state, n_captures
   
 def draw_posible_moves(win,moves):
     for move in list(moves.keys()):
         row, col = move
         pygame.draw.circle(win, GREEN, (col * SQUARE_SIZE + SQUARE_SIZE//2 + EDGE_SIZE, row * SQUARE_SIZE + SQUARE_SIZE//2 + EDGE_SIZE), 15) 
 
-                     
+
+def change_turn(turn):
+    if turn == RED:
+        turn = WHITE
+    else:
+        turn = RED
+    return turn

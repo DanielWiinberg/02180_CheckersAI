@@ -3,7 +3,7 @@ from .constants import RED, WHITE, SQUARE_SIZE, GREY, CROWN, EDGE_SIZE,PADDING,O
 
 class Piece:
 
-    def __init__(self, row, col, color, name, king=False):
+    def __init__(self, row, col, color, name, king = False):
         self.row = row
         self.col = col
         self.color = color

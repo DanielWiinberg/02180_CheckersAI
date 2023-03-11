@@ -6,23 +6,22 @@ import checkers.board as board
 import checkers.moves as mv
 import checkers.score as score
 pygame.init()
+from algorithms.mini_max import mini_max
 
 from checkers.piece import Piece
 
 
 FPS = 60
+RECURSION_LIMIT = 6
 
 WIN = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption('Checkers')
-
-
 
 def get_row_col_from_mouse(pos):
     x, y = pos
     row = (y- EDGE_SIZE) // SQUARE_SIZE
     col = (x-EDGE_SIZE) // SQUARE_SIZE 
     return row, col
-
 
 def update(board_matrix, moves, n_white_pieces, n_red_pieces):
     board.draw_checker_board(WIN)
@@ -33,12 +32,7 @@ def update(board_matrix, moves, n_white_pieces, n_red_pieces):
       mv.draw_posible_moves(WIN,moves) 
     pygame.display.update()
 
-def change_turn(turn):
-    if turn == RED:
-        turn = WHITE
-    else:
-        turn = RED
-    return turn
+
 
 
 def main():
@@ -46,7 +40,7 @@ def main():
     clock = pygame.time.Clock()
     
     board.draw_checker_board(WIN)
-    board_matrix = board.create_pieces_board() 
+    board_state = board.create_pieces_board() 
     moves = []
     select = []
     #print(board_matrix) 
@@ -64,34 +58,38 @@ def main():
                 pos = pygame.mouse.get_pos()
                 row, col = get_row_col_from_mouse(pos)
                 
+                print(mini_max(board_state, turn, turn, 0, RECURSION_LIMIT))
+                
                 if moves:
                     if (row,col) in moves:
-                        captures = moves[(row,col)]
-                        print(captures)
-                        board_matrix,n_captures = mv.move(board_matrix, captures, select[0], select[1], row, col) 
+                        piece = board_state[select[0]][select[1]]
+                        move = (row,col)
+                        board_state,n_captures = mv.move(board_state, piece, moves, move) 
                         if turn == RED:
                             n_white_pieces = n_white_pieces - n_captures
                         else: 
                             n_red_pieces = n_red_pieces - n_captures
-                        print(board_matrix) 
-                        turn = change_turn(turn)
+                        print(board_state) 
+                        turn = mv.change_turn(turn)
                         moves = []
                         select = []
                         continue
                            
-                if board_matrix[row][col]:
+                if board_state[row][col]:
+                    piece = board_state[row][col]
                     
-                    moves = mv.get_moves(board_matrix, row, col, turn)
-                    piece = board_matrix[row][col]
-                    if moves:
-                        select = [row,col]
-                    print(piece)
-                    print(row, col)
-                    print(moves)
+                    if piece.color == turn:
+                    
+                        moves = mv.get_moves(board_state, piece)
+                        if moves:
+                            select = [row,col]
+                        print(piece)
+                        print(row, col)
+                        print(moves)
                 
         
         
-        update(board_matrix, moves, n_white_pieces, n_red_pieces)
+        update(board_state, moves, n_white_pieces, n_red_pieces)
         
     pygame.quit()
 
