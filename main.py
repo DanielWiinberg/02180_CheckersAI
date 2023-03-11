@@ -12,7 +12,7 @@ from checkers.piece import Piece
 
 
 FPS = 60
-RECURSION_LIMIT = 6
+RECURSION_LIMIT = 3
 
 WIN = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption('Checkers')
