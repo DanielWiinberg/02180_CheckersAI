@@ -90,8 +90,7 @@ def move(board_state, piece, moves ,move):
     new_row, new_col = move[0], move[1]
     captures = moves[move]
     
-    #king = board_state[row][col].king
-    king = False
+    king = board_state[row][col].king
     if new_row == ROWS - 1 or new_row == 0:
         king = True
     
