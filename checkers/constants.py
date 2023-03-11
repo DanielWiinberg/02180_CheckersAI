@@ -7,6 +7,7 @@ ROWS, COLS = 8, 8
 SQUARE_SIZE = WIDTH_BOARD//COLS
 SCORE_BOX_WIDTH = 4*SQUARE_SIZE
 WIDTH, HEIGHT = WIDTH_BOARD+2*EDGE_SIZE + SCORE_BOX_WIDTH, HEIGHT_BOARD +2*EDGE_SIZE
+N_PIECES = 12
 
 
 PADDING = 15
@@ -23,5 +24,6 @@ BLACK = (0,0,0)
 BLUE = (0, 0, 255)
 DARK_BLUE = (0, 51, 102)
 GREY = (128, 128, 128)
+GREEN = (0, 128, 0)
 
 CROWN = pygame.transform.scale(pygame.image.load('assets/crown.png'), (44,25))

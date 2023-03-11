@@ -3,11 +3,12 @@ from .constants import RED, WHITE, SQUARE_SIZE, GREY, CROWN, EDGE_SIZE,PADDING,O
 
 class Piece:
 
-    def __init__(self, row, col, color):
+    def __init__(self, row, col, color, name, king=False):
         self.row = row
         self.col = col
         self.color = color
-        self.king = False
+        self.name = name + '_' + str(row) + str(col)
+        self.king = king
         self.x = 0
         self.y = 0
         self.calc_pos()
@@ -32,4 +33,4 @@ class Piece:
         self.calc_pos()
 
     def __repr__(self):
-        return str(self.color)
+        return str(self.name)
