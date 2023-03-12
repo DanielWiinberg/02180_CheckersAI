@@ -68,7 +68,7 @@ def mini_max1(board_state, max_player, turn_color, depth, depth_limit):
 def mini_max(board_state, max_player, turn_color, depth, depth_limit):
     best_scores = {}
     
-    if depth == depth_limit: # Stop condition if won the game
+    if depth == depth_limit or end_of_game(board_state): # Stop condition if won the game
         best_scores[None] = utility_function(board_state, max_player)
     else:
         pieces = get_pieces(board_state, turn_color)
@@ -77,11 +77,11 @@ def mini_max(board_state, max_player, turn_color, depth, depth_limit):
         for piece in pieces:
             actions = mv.get_moves(board_state, piece)
             for action in actions:
-                print("HERE!!!!")
-                print(board_state)
+                # print("HERE!!!!")
+                # print(board_state)
                 new_board_state = deepcopy(board_state)
                 new_board_state, _ = list(mv.move(new_board_state, piece, actions, action))
-                print(new_board_state)
+                # print(new_board_state)
                 score, _ = mini_max(new_board_state, max_player, mv.change_turn(turn_color), depth + 1, depth_limit) 
                 best_scores[(piece, action)] = score
 
@@ -92,8 +92,8 @@ def mini_max(board_state, max_player, turn_color, depth, depth_limit):
             return None, None
         max_action = max_actions[0]
         
-        print('! max_score: ', max_score)
-        print('! max_action: ', max_action)
+        # print('! max_score: ', max_score)
+        # print('! max_action: ', max_action)
         return max_score, max_action
 
     else:
@@ -102,8 +102,8 @@ def mini_max(board_state, max_player, turn_color, depth, depth_limit):
         if not min_actions:
             return None, None
         min_action = min_actions[0]
-        print('! min_score: ', min_score)
-        print('! min_action: ', min_action)
+        # print('! min_score: ', min_score)
+        # print('! min_action: ', min_action)
         return min_score, min_action
     
 
@@ -118,6 +118,11 @@ def get_pieces(board_state, turn_color):
             if piece != 0 and piece.color == turn_color:
                 pieces.append(piece)
     return pieces
+
+
+def end_of_game(board_state):
+    # Not sure if working correctly... before this happens a min() in the minimax is empty and returns error
+    if get_pieces(board_state, WHITE) == 0 or get_pieces(board_state, RED) == 0: return True
 
 def utility_function(board_state, turn_color):
     maximizing_player = len( get_pieces(board_state, turn_color) )
