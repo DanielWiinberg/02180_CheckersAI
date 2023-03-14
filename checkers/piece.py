@@ -7,6 +7,10 @@ class Piece:
         self.row = row
         self.col = col
         self.color = color
+        if color == RED:
+            name="RED"
+        else:
+            name="WHITE"
         self.name = name + '_' + str(row) + str(col)
         self.king = king
         self.x = 0
