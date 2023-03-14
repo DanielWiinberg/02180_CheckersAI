@@ -6,7 +6,7 @@ import checkers.board as board
 import checkers.moves as mv
 import checkers.score as score
 pygame.init()
-from algorithms.mini_max import mini_max
+from algorithms.mini_max import *
 
 from checkers.piece import Piece
 
@@ -56,7 +56,7 @@ def main():
                 run = False
             
             if max_player == turn:
-                max_score, max_action = mini_max(board_state, turn, turn, 0, RECURSION_LIMIT)
+                max_score, max_action = mini_max_alpha_beta(board_state, turn, turn, 0, RECURSION_LIMIT)
                 piece = max_action[0]
                 move = max_action[1]
                 moves = mv.get_moves(board_state, piece)
@@ -87,7 +87,7 @@ def main():
                             else: 
                                 n_red_pieces = n_red_pieces - n_captures
                             
-                            print(board_state) 
+                            #print(board_state) 
                             turn = mv.change_turn(turn)
                             moves = []
                             select = []
@@ -101,9 +101,9 @@ def main():
                             moves = mv.get_moves(board_state, piece)
                             if moves:
                                 select = [row,col]
-                            print(piece)
-                            print(row, col)
-                            print(moves)
+                            # print(piece)
+                            # print(row, col)
+                            # print(moves)
                 
         
         
