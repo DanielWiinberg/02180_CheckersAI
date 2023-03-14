@@ -90,11 +90,11 @@ def move(board_state, piece, moves ,move):
     new_row, new_col = move[0], move[1]
     captures = moves[move]
     
-    king = board_state[row][col].king
+    king = piece.king #king = board_state[row][col].king
     if new_row == ROWS - 1 or new_row == 0:
         king = True
     
-    board_state[new_row][new_col] = Piece(new_row, new_col, board_state[row][col].color, board_state[row][col].name, king) 
+    board_state[new_row][new_col] = Piece(new_row, new_col, piece.color, piece.name, king)  #Piece(new_row, new_col, board_state[row][col].color, board_state[row][col].name, king) 
     board_state[row][col] = 0
     n_captures = 0
     for capture in captures:

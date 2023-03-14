@@ -3,7 +3,6 @@ from .constants import BLACK, ROWS, RED, GREEN, SQUARE_SIZE, COLS, GREY, WHITE, 
 from .piece import Piece
 
 
-    
 def draw_checker_board(win):
     #print(self.board)
     win.fill(DARK_BLUE)
