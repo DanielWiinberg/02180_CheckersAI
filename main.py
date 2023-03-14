@@ -64,7 +64,7 @@ def main():
     clock = pygame.time.Clock()
     
     board.draw_checker_board(WIN)
-    board_state = board.create_pieces_board() 
+    board_state = board.create_pieces_board()
     moves = []
     select = []
     #print(board_matrix) 
@@ -80,7 +80,6 @@ def main():
 
     while run:
         clock.tick(FPS)                
-        #board.draw_pieces(WIN, board_matrix)     
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 run = False
@@ -88,8 +87,14 @@ def main():
             if turn == AI:
                 start_time1 = timer()
                 board_state, moves, n_white_pieces, n_red_pieces, turn = ai_move(board_state, turn, RECURSION_LIMIT)
+                
+                print(f'Max score: {max_score}')
+                print(f'Max action: {max_action}')
+                print(f'Backline pieces: {get_backline_pieces(board_state, WHITE)}')
+                
                 update(board_state, moves, n_white_pieces, n_red_pieces)
                 search_time1 += timer() - start_time1
+                
                 print(f'time to move(1): {timer() - start_time1}    total search time(1): {search_time1}')
                 continue
 
