@@ -69,6 +69,7 @@ def main():
     board.draw_checker_board(WIN)
     board_state = board.create_pieces_board() 
     board_state_explored = []
+
     moves = []
     select = []
     #print(board_matrix) 
@@ -80,8 +81,6 @@ def main():
     search_time1 = 0
     search_time2 = 0
     game_mode = 'AI2'
-
-    #update(board_state, moves, n_white_pieces, n_red_pieces)
 
     while run:
         clock.tick(FPS) 
@@ -110,7 +109,9 @@ def main():
             if turn == AI:
                 start_time1 = timer()
                 board_state, moves, n_white_pieces, n_red_pieces, turn, board_state_explored = ai_move(board_state, board_state_explored, turn, RECURSION_LIMIT)
+
                 search_time1 += timer() - start_time1
+                
                 print(f'time to move(1): {timer() - start_time1}    total search time(1): {search_time1}')
                 continue
 
