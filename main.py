@@ -1,23 +1,22 @@
 import pygame
 import numpy as np
 from checkers.constants import WIDTH, HEIGHT, SQUARE_SIZE, RED, EDGE_SIZE, ROWS, COLS, WHITE, N_PIECES
-#from checkers.game import Game
 import checkers.board as board
 import checkers.moves as mv
 import checkers.score as score
+from checkers.piece import Piece
 pygame.init()
 
-import algorithms.mini_max as minimax
 from timeit import default_timer as timer
 from algorithms.mini_max import *
+from algorithms.mini_max_pruning import *
+from algorithms.helper_functions import *
 
-
-from checkers.piece import Piece
 
 
 FPS = 60
 RECURSION_LIMIT = 2
-RECURSION_LIMIT2 = 2 
+RECURSION_LIMIT2 = 3 
 
 WIN = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption('Checkers')
@@ -37,16 +36,19 @@ def update(board_matrix, moves, n_white_pieces, n_red_pieces):
       mv.draw_posible_moves(WIN,moves) 
     pygame.display.update()
 
-def ai_move(board_state, board_state_explored, turn, termination, ai_method='minimax_graph'):
-    n_white_pieces = len( minimax.get_pieces(board_state, WHITE) )
-    n_red_pieces = len( minimax.get_pieces(board_state, RED) )
+def ai_move(board_state, board_state_explored, turn, termination, ai_method='minimax'):
+    n_white_pieces = len( get_pieces(board_state, WHITE) )
+    n_red_pieces = len( get_pieces(board_state, RED) )
 
     if ai_method == 'minimax':
-        max_score, max_action = minimax.mini_max(board_state, turn, turn, 0, termination)
+        max_score, max_action = mini_max(board_state, turn, turn, 0, termination)
         board_state_explored = []
     if ai_method == 'minimax_graph':
-        max_score, max_action, board_state_explored = minimax.mini_max_graph(board_state, board_state_explored, turn, turn, 0, termination)
-    
+        max_score, max_action, board_state_explored = mini_max_graph(board_state, board_state_explored, turn, turn, 0, termination)
+    if ai_method == 'alpha_beta':
+        max_score, max_action = mini_max_alpha_beta(board_state, turn, turn, 0, termination)
+        board_state_explored = []
+
     piece = max_action[0]
     move = max_action[1]
     moves = mv.get_moves(board_state, piece)
@@ -72,7 +74,6 @@ def main():
 
     moves = []
     select = []
-    #print(board_matrix) 
     n_white_pieces = N_PIECES
     n_red_pieces = N_PIECES
     turn = RED
@@ -85,8 +86,7 @@ def main():
     while run:
         clock.tick(FPS) 
         pygame.time.wait(500)
-        update(board_state, moves, n_white_pieces, n_red_pieces)               
-        #board.draw_pieces(WIN, board_matrix)    
+        update(board_state, moves, n_white_pieces, n_red_pieces)
         
         if end_of_game(board_state, turn):
             print("WE HAVE A WINNER!!!")
@@ -132,7 +132,6 @@ def main():
                         pos = pygame.mouse.get_pos()
                         row, col = get_row_col_from_mouse(pos)
                         
-                        
                         if moves:
                             if (row,col) in moves:
                                 piece = board_state[select[0]][select[1]]
@@ -162,31 +161,6 @@ def main():
                                 # print(row, col)
                                 # print(moves)
                     
-            
-        
     pygame.quit()
 
-
 main()
-
-
-
-
-
-                # start = timer()
-                # max_score, max_action = mini_max(board_state, turn, turn, 0, RECURSION_LIMIT)
-                # piece = max_action[0]
-                # move = max_action[1]
-                # moves = mv.get_moves(board_state, piece)
-                # board_state,n_captures = mv.move(board_state, piece, moves, move) 
-                # if turn == RED:
-                #     n_white_pieces = n_white_pieces - n_captures
-                # else: 
-                #     n_red_pieces = n_red_pieces - n_captures
-                # #print(board_state) 
-                # turn = mv.change_turn(turn)
-                # moves = []
-                # select = []
-                # end = timer()
-                # print(f'time to move: {end - start}')
-                # update(board_state, moves, n_white_pieces, n_red_pieces)
