@@ -12,21 +12,7 @@ def draw_checker_board(win):
             pygame.draw.rect(win, BEIGE, (row*SQUARE_SIZE+EDGE_SIZE, col *SQUARE_SIZE+EDGE_SIZE, SQUARE_SIZE, SQUARE_SIZE))
 
                 
-def draw_scores(win):
-    SCORE_BOX_LEFT = 2*EDGE_SIZE+WIDTH_BOARD
-    SCORE_BOX_CENTER = SCORE_BOX_LEFT+SCORE_BOX_WIDTH//2
-    
-    font = pygame.font.SysFont("moolboran", 26)
-    label = font.render("WHITE PLAYER CAPTURES", 1, WHITE)
-    text_rect = label.get_rect(center=(SCORE_BOX_CENTER,2* EDGE_SIZE))
-    win.blit(label, text_rect)
-    label = font.render("RED PLAYER CAPTURES", 1, WHITE)
-    text_rect = label.get_rect(center=(SCORE_BOX_CENTER,2* EDGE_SIZE+HEIGHT_BOARD//2))
-    win.blit(label, text_rect)
-    
-    Score.draw_scores(win, RED)
-    Score.draw_scores(win, WHITE)
-    
+   
 
 def create_pieces_board():
     board_matrix = [[0] * (COLS) for _ in range(ROWS)]

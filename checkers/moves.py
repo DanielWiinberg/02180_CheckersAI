@@ -83,9 +83,9 @@ def move(board_state, piece, moves ,move):
     #print("Move piece:")
     
     #print(board_state)
-    #print(piece)
-    #print(moves)
-    #print(move)
+    # print(piece)
+    # print(moves)
+    # print(move)
     row, col = piece.row, piece.col
     new_row, new_col = move[0], move[1]
     captures = moves[move]

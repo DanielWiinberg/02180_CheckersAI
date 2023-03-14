@@ -6,11 +6,11 @@ import checkers.board as board
 import checkers.moves as mv
 import checkers.score as score
 pygame.init()
-import algorithms.mini_max as minimax
-# from algorithms.mini_max import mini_max
-# from algorithms.mini_max import get_pieces
 
+import algorithms.mini_max as minimax
 from timeit import default_timer as timer
+from algorithms.mini_max import *
+
 
 from checkers.piece import Piece
 
@@ -87,20 +87,16 @@ def main():
             
             if turn == AI:
                 start_time1 = timer()
-
                 board_state, moves, n_white_pieces, n_red_pieces, turn = ai_move(board_state, turn, RECURSION_LIMIT)
                 update(board_state, moves, n_white_pieces, n_red_pieces)
-
                 search_time1 += timer() - start_time1
                 print(f'time to move(1): {timer() - start_time1}    total search time(1): {search_time1}')
                 continue
 
             if turn == AI2:
                 start_time2 = timer()
-
                 board_state, moves, n_white_pieces, n_red_pieces, turn = ai_move(board_state, turn, RECURSION_LIMIT2)
                 update(board_state, moves, n_white_pieces, n_red_pieces)
-
                 search_time2 += timer() - start_time2
                 print(f'time to move(2): {timer() - start_time2}    total search time(2): {search_time2}')
                 continue
@@ -135,9 +131,11 @@ def main():
                             moves = mv.get_moves(board_state, piece)
                             if moves:
                                 select = [row,col]
-                            #print(piece)
-                            #print(row, col)
-                            #print(moves)
+                                
+                            # print(piece)
+                            # print(row, col)
+                            # print(moves)
+                
 
         
         update(board_state, moves, n_white_pieces, n_red_pieces)
