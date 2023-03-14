@@ -16,7 +16,7 @@ from algorithms.helper_functions import *
 
 FPS = 60
 RECURSION_LIMIT = 2
-RECURSION_LIMIT2 = 4 
+RECURSION_LIMIT2 = 3 
 
 WIN = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption('Checkers')
@@ -36,7 +36,7 @@ def update(board_matrix, moves, n_white_pieces, n_red_pieces):
       mv.draw_posible_moves(WIN,moves) 
     pygame.display.update()
 
-def ai_move(board_state, board_state_explored, turn, termination, ai_method='minimax'):
+def ai_move(board_state, board_state_explored, turn, termination, ai_method='alpha_beta'):
     n_white_pieces = len( get_pieces(board_state, WHITE) )
     n_red_pieces = len( get_pieces(board_state, RED) )
 
@@ -44,12 +44,10 @@ def ai_move(board_state, board_state_explored, turn, termination, ai_method='min
         max_score, max_action, nodes_explored = mini_max(board_state, turn, turn, 0, termination)
         board_state_explored = []
     if ai_method == 'minimax_graph':
-        max_score, max_action, board_state_explored = mini_max_graph(board_state, board_state_explored, turn, turn, 0, termination)
-        nodes_explored = 0
+        max_score, max_action, board_state_explored, nodes_explored = mini_max_graph(board_state, board_state_explored, turn, turn, 0, termination)
     if ai_method == 'alpha_beta':
-        max_score, max_action = mini_max_alpha_beta(board_state, turn, turn, 0, termination)
+        max_score, max_action, nodes_explored = mini_max_alpha_beta(board_state, turn, turn, 0, termination)
         board_state_explored = []
-        nodes_explored = 0
 
     piece = max_action[0]
     move = max_action[1]
@@ -90,7 +88,7 @@ def main():
 
     while run:
         clock.tick(FPS) 
-        pygame.time.wait(500)
+        #pygame.time.wait(500)
         update(board_state, moves, n_white_pieces, n_red_pieces)
         
         if end_of_game(board_state, turn):

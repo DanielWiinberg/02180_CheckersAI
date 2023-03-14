@@ -49,7 +49,7 @@ def get_backline_pieces(board_state, turn_color):
 
 def utility_function(board_state, turn_color):
     # Weights, normal pieces are weight 1
-    king_weight = 0.5
+    king_weight = 0
     backline_weight = 100
     
     kings_red = get_kings(board_state, RED)

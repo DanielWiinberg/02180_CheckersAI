@@ -11,7 +11,7 @@ def mini_max(board_state, max_player, turn_color, depth, depth_limit):
     max_score = max(best_scores.values())
     max_actions = [action for action, score in best_scores.items() if score == max_score]
     if not max_actions:
-        return None, None
+        return None, None, nodes_explored
     max_action = max_actions[0]
     # print('! max_score: ', max_score)
     # print('! max_action: ', max_action)
@@ -68,72 +68,68 @@ def min_func(board_state, max_player, turn_color, depth, depth_limit, nodes_expl
 ''' MINIMAX GRAPH SEARCH '''
                 
 def mini_max_graph(board_state, board_state_explored, max_player, turn_color, depth, depth_limit):
+    nodes_explored = 0
     board_state_explored = [(turn_color,board_state)]
-    best_scores,board_state_explored = min_func_graph(board_state, board_state_explored, max_player, turn_color, depth, depth_limit)
+    best_scores,board_state_explored, nodes_explored = min_func_graph(board_state, board_state_explored, max_player, turn_color, depth, depth_limit, nodes_explored)
     max_score = max(best_scores.values())
     max_actions = [action for action, score in best_scores.items() if score == max_score]
     if not max_actions:
-        return None, None, board_state_explored
+        return None, None, board_state_explored, nodes_explored
     max_action = max_actions[0]
     # print('! max_score: ', max_score)
     # print('! max_action: ', max_action)
-    return max_score, max_action, board_state_explored
+    return max_score, max_action, board_state_explored, nodes_explored
 
-def max_func_graph(board_state, board_state_explored, max_player, turn_color, depth, depth_limit):
+def max_func_graph(board_state, board_state_explored, max_player, turn_color, depth, depth_limit, nodes_explored):
     best_scores = {}
-    if depth == depth_limit or end_of_game(board_state, turn_color): # Stop condition if won the game
+    if depth == depth_limit or end_of_game(board_state, turn_color):
         best_scores[None] = utility_function(board_state, max_player)
-        return best_scores,board_state_explored
+        return best_scores,board_state_explored, nodes_explored
     
     pieces = get_pieces(board_state, turn_color)
-    pieces = [piece for piece in pieces if mv.get_moves(board_state, piece)] # Only keep the pieces that can actually move
+    pieces = [piece for piece in pieces if mv.get_moves(board_state, piece)]
     for piece in pieces:
         actions = mv.get_moves(board_state, piece)
         for action in actions:
-            # print("HERE MAX!!!!")
-            # print(board_state)
+            nodes_explored += 1
             new_board_state = deepcopy(board_state)
             new_board_state, _ = list(mv.move(new_board_state, piece, actions, action))
-            
             if (turn_color,new_board_state) in board_state_explored:
                 continue
             board_state_explored.append((turn_color,new_board_state))
-            #print(new_board_state)
-            b_score,board_state_explored = min_func_graph(new_board_state, board_state_explored, max_player, mv.change_turn(turn_color), depth + 1, depth_limit) 
+            b_score,board_state_explored, nodes_explored = min_func_graph(new_board_state, board_state_explored, max_player, mv.change_turn(turn_color), depth + 1, depth_limit, nodes_explored) 
             if b_score:
                 min_score = max(b_score.values())
                 best_scores[(piece, action)] = min_score
                 
-    return best_scores,board_state_explored
+    return best_scores,board_state_explored, nodes_explored
 
 
         
-def min_func_graph(board_state, board_state_explored, max_player, turn_color, depth, depth_limit):
+def min_func_graph(board_state, board_state_explored, max_player, turn_color, depth, depth_limit, nodes_explored):
     best_scores = {}
-    if depth == depth_limit or end_of_game(board_state, turn_color): # Stop condition if won the game
+    if depth == depth_limit or end_of_game(board_state, turn_color):
         best_scores[None] = utility_function(board_state, max_player)
-        return best_scores,board_state_explored
+        return best_scores,board_state_explored, nodes_explored
     
     pieces = get_pieces(board_state, turn_color)
-    pieces = [piece for piece in pieces if mv.get_moves(board_state, piece)] # Only keep the pieces that can actually move
+    pieces = [piece for piece in pieces if mv.get_moves(board_state, piece)]
     for piece in pieces:
         actions = mv.get_moves(board_state, piece)
         for action in actions:
-            # print("HERE MIN!!!!")
-            # print(board_state)
+            nodes_explored += 1
             new_board_state = deepcopy(board_state)
             new_board_state, _ = list(mv.move(new_board_state, piece, actions, action))
             
             if (turn_color,new_board_state) in board_state_explored:
                 continue
             board_state_explored.append((turn_color,new_board_state))
-            #print(new_board_state)
-            b_score,board_state_explored = max_func_graph(new_board_state, board_state_explored, max_player, mv.change_turn(turn_color), depth + 1, depth_limit) 
+            b_score,board_state_explored, nodes_explored = max_func_graph(new_board_state, board_state_explored, max_player, mv.change_turn(turn_color), depth + 1, depth_limit, nodes_explored) 
             if b_score:
                 min_score = min(b_score.values())
                 best_scores[(piece, action)] = min_score
                 
-    return best_scores,board_state_explored
+    return best_scores,board_state_explored, nodes_explored
 
 
 
