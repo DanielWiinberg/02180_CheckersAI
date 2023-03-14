@@ -16,7 +16,7 @@ from algorithms.helper_functions import *
 
 FPS = 60
 RECURSION_LIMIT = 2
-RECURSION_LIMIT2 = 3 
+RECURSION_LIMIT2 = 4 
 
 WIN = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption('Checkers')
@@ -41,13 +41,15 @@ def ai_move(board_state, board_state_explored, turn, termination, ai_method='min
     n_red_pieces = len( get_pieces(board_state, RED) )
 
     if ai_method == 'minimax':
-        max_score, max_action = mini_max(board_state, turn, turn, 0, termination)
+        max_score, max_action, nodes_explored = mini_max(board_state, turn, turn, 0, termination)
         board_state_explored = []
     if ai_method == 'minimax_graph':
         max_score, max_action, board_state_explored = mini_max_graph(board_state, board_state_explored, turn, turn, 0, termination)
+        nodes_explored = 0
     if ai_method == 'alpha_beta':
         max_score, max_action = mini_max_alpha_beta(board_state, turn, turn, 0, termination)
         board_state_explored = []
+        nodes_explored = 0
 
     piece = max_action[0]
     move = max_action[1]
@@ -60,7 +62,7 @@ def ai_move(board_state, board_state_explored, turn, termination, ai_method='min
     moves = []
     select = []
     turn = mv.change_turn(turn)
-    return board_state, moves, n_white_pieces, n_red_pieces, turn, board_state_explored
+    return board_state, moves, n_white_pieces, n_red_pieces, turn, board_state_explored, nodes_explored
 
 
 
@@ -79,9 +81,12 @@ def main():
     turn = RED
     AI = WHITE
     AI2 = RED
-    search_time1 = 0
-    search_time2 = 0
     game_mode = 'AI2'
+    search_time1 = 0
+    nodes_explored1 = 0
+    search_time2 = 0
+    nodes_explored2 = 0
+    
 
     while run:
         clock.tick(FPS) 
@@ -108,20 +113,25 @@ def main():
         else:   
             if turn == AI:
                 start_time1 = timer()
-                board_state, moves, n_white_pieces, n_red_pieces, turn, board_state_explored = ai_move(board_state, board_state_explored, turn, RECURSION_LIMIT)
+                board_state, moves, n_white_pieces, n_red_pieces, turn, board_state_explored, nodes_explored = ai_move(board_state, board_state_explored, turn, RECURSION_LIMIT)
 
                 search_time1 += timer() - start_time1
-                
-                print(f'time to move(1): {timer() - start_time1}    total search time(1): {search_time1}')
+                nodes_explored1 += nodes_explored
+                print('--- AI 1 ---')
+                print(f'nodes explored(1):  {nodes_explored1} / {nodes_explored}')
+                print(f'time (2):           {round(search_time1, 2)} / {round(timer() - start_time1, 2)}')
                 continue
 
             if game_mode == 'AI2':
                 if turn == AI2:
                     start_time2 = timer()
-                    board_state, moves, n_white_pieces, n_red_pieces, turn, board_state_explored = ai_move(board_state, board_state_explored, turn, RECURSION_LIMIT2)
+                    board_state, moves, n_white_pieces, n_red_pieces, turn, board_state_explored, nodes_explored = ai_move(board_state, board_state_explored, turn, RECURSION_LIMIT2)
+                    
                     search_time2 += timer() - start_time2
-                    print(f'time to move(2): {timer() - start_time2}    total search time(2): {search_time2}')
-                    #continue
+                    nodes_explored2 += nodes_explored
+                    print('--- AI 2 ---')
+                    print(f'nodes explored(2):  {nodes_explored2} / {nodes_explored}')
+                    print(f'time (2):           {round(search_time2, 2)} / {round(timer() - start_time2, 2)}')
             
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:

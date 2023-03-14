@@ -15,7 +15,6 @@ def get_pieces(board_state, turn_color):
 
 
 def end_of_game(board_state, turn_color):
-    # Not sure if working correctly... before this happens a min() in the minimax is empty and returns error
     if get_pieces(board_state, WHITE) == 0:
         print("RED WIN")
         return True

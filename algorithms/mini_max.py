@@ -4,9 +4,10 @@ from checkers import moves as mv
 from copy import deepcopy
 import numpy as np
 
-'''SIMPLE MINIMAX TREE SEARCH CODE'''            
+''' MINIMAX TREE SEARCH '''            
 def mini_max(board_state, max_player, turn_color, depth, depth_limit):
-    best_scores = min_func(board_state, max_player, turn_color, depth, depth_limit)
+    nodes_explored = 0
+    best_scores, nodes_explored = min_func(board_state, max_player, turn_color, depth, depth_limit, nodes_explored)
     max_score = max(best_scores.values())
     max_actions = [action for action, score in best_scores.items() if score == max_score]
     if not max_actions:
@@ -14,57 +15,57 @@ def mini_max(board_state, max_player, turn_color, depth, depth_limit):
     max_action = max_actions[0]
     # print('! max_score: ', max_score)
     # print('! max_action: ', max_action)
-    return max_score, max_action
+    return max_score, max_action, nodes_explored
 
-def max_func(board_state, max_player, turn_color, depth, depth_limit):
+def max_func(board_state, max_player, turn_color, depth, depth_limit, nodes_explored):
     best_scores = {}
     if depth == depth_limit or end_of_game(board_state, turn_color): # Stop condition if won the game
         best_scores[None] = utility_function(board_state, max_player)
-        return best_scores
+        return best_scores, nodes_explored
     
     pieces = get_pieces(board_state, turn_color)
     pieces = [piece for piece in pieces if mv.get_moves(board_state, piece)] # Only keep the pieces that can actually move
     for piece in pieces:
         actions = mv.get_moves(board_state, piece)
         for action in actions:
-            # print("HERE MAX!!!!")
-            # print(board_state)
+            nodes_explored += 1
             new_board_state = deepcopy(board_state)
             new_board_state, _ = list(mv.move(new_board_state, piece, actions, action))
-            #print(new_board_state)
-            b_score = min_func(new_board_state, max_player, mv.change_turn(turn_color), depth + 1, depth_limit) 
+            b_score, nodes_explored = min_func(new_board_state, max_player, mv.change_turn(turn_color), depth + 1, depth_limit, nodes_explored) 
             if b_score:
                 min_score = max(b_score.values())
                 best_scores[(piece, action)] = min_score
-    return best_scores
+    return best_scores, nodes_explored
 
 
         
-def min_func(board_state, max_player, turn_color, depth, depth_limit):
+def min_func(board_state, max_player, turn_color, depth, depth_limit, nodes_explored):
     best_scores = {}
     if depth == depth_limit or end_of_game(board_state, turn_color): # Stop condition if won the game
         best_scores[None] = utility_function(board_state, max_player)
-        return best_scores
+        return best_scores, nodes_explored
     
     pieces = get_pieces(board_state, turn_color)
     pieces = [piece for piece in pieces if mv.get_moves(board_state, piece)] # Only keep the pieces that can actually move
     for piece in pieces:
         actions = mv.get_moves(board_state, piece)
         for action in actions:
-            # print("HERE MIN!!!!")
-            # print(board_state)
+            nodes_explored += 1
             new_board_state = deepcopy(board_state)
             new_board_state, _ = list(mv.move(new_board_state, piece, actions, action))
-            #print(new_board_state)
-            b_score = max_func(new_board_state, max_player, mv.change_turn(turn_color), depth + 1, depth_limit) 
+            b_score, nodes_explored = max_func(new_board_state, max_player, mv.change_turn(turn_color), depth + 1, depth_limit, nodes_explored) 
             if b_score:
                 min_score = min(b_score.values())
                 best_scores[(piece, action)] = min_score
                 
-    return best_scores
+    return best_scores, nodes_explored
 
 
-'''SIMPLE MINIMAX GRAPH SEARCH CODE'''
+
+
+
+
+''' MINIMAX GRAPH SEARCH '''
                 
 def mini_max_graph(board_state, board_state_explored, max_player, turn_color, depth, depth_limit):
     board_state_explored = [(turn_color,board_state)]
