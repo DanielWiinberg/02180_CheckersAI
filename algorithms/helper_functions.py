@@ -49,7 +49,7 @@ def get_backline_pieces(board_state, turn_color):
 
 def utility_function(board_state, turn_color):
     # Weights, normal pieces are weight 1
-    king_weight = 0
+    king_weight = 2
     backline_weight = 100
     
     kings_red = get_kings(board_state, RED)
@@ -70,3 +70,20 @@ def utility_function(board_state, turn_color):
         return util_value_red
     else:
         return util_value_white
+
+
+def get_board_signature(board_state):
+    signature = ''
+    for row in range(ROWS):
+        for col in range(COLS):
+            element = board_state[row][col]
+            if board_state[row][col] !=0:
+                signature += board_state[row][col].name
+                if board_state[row][col].king:
+                    signature += "_king"
+                signature += ","
+            else:
+                signature += '0,'
+    signature = signature[:-1] 
+    #print(signature)        
+    return signature

@@ -36,18 +36,16 @@ def update(board_matrix, moves, n_white_pieces, n_red_pieces):
       mv.draw_posible_moves(WIN,moves) 
     pygame.display.update()
 
-def ai_move(board_state, board_state_explored, turn, termination, ai_method='alpha_beta'):
+def ai_move(board_state, board_state_explored, turn, termination, ai_method='minimax_graph'):
     n_white_pieces = len( get_pieces(board_state, WHITE) )
     n_red_pieces = len( get_pieces(board_state, RED) )
 
     if ai_method == 'minimax':
         max_score, max_action, nodes_explored = mini_max(board_state, turn, turn, 0, termination)
-        board_state_explored = []
     if ai_method == 'minimax_graph':
-        max_score, max_action, board_state_explored, nodes_explored = mini_max_graph(board_state, board_state_explored, turn, turn, 0, termination)
+        max_score, max_action, nodes_explored = mini_max_graph(board_state, board_state_explored, turn, turn, 0, termination)
     if ai_method == 'alpha_beta':
         max_score, max_action, nodes_explored = mini_max_alpha_beta(board_state, turn, turn, 0, termination)
-        board_state_explored = []
 
     piece = max_action[0]
     move = max_action[1]
@@ -60,7 +58,7 @@ def ai_move(board_state, board_state_explored, turn, termination, ai_method='alp
     moves = []
     select = []
     turn = mv.change_turn(turn)
-    return board_state, moves, n_white_pieces, n_red_pieces, turn, board_state_explored, nodes_explored
+    return board_state, moves, n_white_pieces, n_red_pieces, turn, nodes_explored
 
 
 
@@ -91,9 +89,12 @@ def main():
         #pygame.time.wait(500)
         update(board_state, moves, n_white_pieces, n_red_pieces)
         
+        board_state_explored.append(get_board_signature(board_state))
+        
+        print("Number of total states explored: {0}".format(len(board_state_explored)))
         if end_of_game(board_state, turn):
             print("WE HAVE A WINNER!!!")
-            pygame.time.wait(2000)
+            #pygame.time.wait(2000)
             print(get_pieces(board_state, RED))
             
             print(get_pieces(board_state, WHITE))
@@ -111,7 +112,7 @@ def main():
         else:   
             if turn == AI:
                 start_time1 = timer()
-                board_state, moves, n_white_pieces, n_red_pieces, turn, board_state_explored, nodes_explored = ai_move(board_state, board_state_explored, turn, RECURSION_LIMIT)
+                board_state, moves, n_white_pieces, n_red_pieces, turn, nodes_explored = ai_move(board_state, board_state_explored, turn, RECURSION_LIMIT)
 
                 search_time1 += timer() - start_time1
                 nodes_explored1 += nodes_explored
@@ -123,7 +124,7 @@ def main():
             if game_mode == 'AI2':
                 if turn == AI2:
                     start_time2 = timer()
-                    board_state, moves, n_white_pieces, n_red_pieces, turn, board_state_explored, nodes_explored = ai_move(board_state, board_state_explored, turn, RECURSION_LIMIT2)
+                    board_state, moves, n_white_pieces, n_red_pieces, turn, nodes_explored = ai_move(board_state, board_state_explored, turn, RECURSION_LIMIT2)
                     
                     search_time2 += timer() - start_time2
                     nodes_explored2 += nodes_explored
