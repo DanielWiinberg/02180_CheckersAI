@@ -68,6 +68,7 @@ def main():
     
     board.draw_checker_board(WIN)
     board_state = board.create_pieces_board() 
+    board_state_explored = []
     board_state_explored_WHITE = []
     board_state_explored_RED = []
 
@@ -115,7 +116,7 @@ def main():
         else:   
             if turn == AI:
                 start_time1 = timer()
-                board_state, moves, n_white_pieces, n_red_pieces, turn, nodes_explored = ai_move(board_state, board_state_explored, turn, RECURSION_LIMIT)
+                board_state, moves, n_white_pieces, n_red_pieces, turn, nodes_explored = ai_move(board_state, board_state_explored, turn, RECURSION_LIMIT_WHITE)
                 search_time1 += timer() - start_time1
                 nodes_explored1 += nodes_explored
                 move_count1 += 1
@@ -129,7 +130,7 @@ def main():
                 if turn == AI2:
                     start_time2 = timer()
 
-                    board_state, moves, n_white_pieces, n_red_pieces, turn, nodes_explored = ai_move(board_state, board_state_explored, turn, RECURSION_LIMIT2)
+                    board_state, moves, n_white_pieces, n_red_pieces, turn, nodes_explored = ai_move(board_state, board_state_explored, turn, RECURSION_LIMIT_RED)
                     search_time2 += timer() - start_time2
                     nodes_explored2 += nodes_explored
                     move_count2 += 1
