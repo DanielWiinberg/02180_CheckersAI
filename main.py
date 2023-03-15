@@ -15,8 +15,8 @@ from algorithms.helper_functions import *
 
 
 FPS = 60
-RECURSION_LIMIT = 2
-RECURSION_LIMIT2 = 3 
+RECURSION_LIMIT_WHITE = 2
+RECURSION_LIMIT_RED = 3 
 
 WIN = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption('Checkers')
@@ -70,7 +70,8 @@ def main():
     
     board.draw_checker_board(WIN)
     board_state = board.create_pieces_board() 
-    board_state_explored = []
+    board_state_explored_WHITE = []
+    board_state_explored_RED = []
 
     moves = []
     select = []
@@ -82,8 +83,10 @@ def main():
     game_mode = 'AI2'
     search_time1 = 0
     nodes_explored1 = 0
+    move_count1 = 0
     search_time2 = 0
     nodes_explored2 = 0
+    move_count2 = 0
     
 
     while run:
@@ -111,23 +114,26 @@ def main():
         else:   
             if turn == AI:
                 start_time1 = timer()
-                board_state, moves, n_white_pieces, n_red_pieces, turn, board_state_explored, nodes_explored = ai_move(board_state, board_state_explored, turn, RECURSION_LIMIT)
-
+                board_state, moves, n_white_pieces, n_red_pieces, turn, board_state_explored_new, nodes_explored = ai_move(board_state, board_state_explored_WHITE, turn, RECURSION_LIMIT_WHITE)
+                board_state_explored_WHITE += board_state_explored_new
                 search_time1 += timer() - start_time1
                 nodes_explored1 += nodes_explored
-                print('--- AI 1 ---')
+                move_count1 += 1
+                print(f'--- AI WHITE move # {move_count1} ---')
                 print(f'nodes explored(1):  {nodes_explored1} / {nodes_explored}')
-                print(f'time (2):           {round(search_time1, 2)} / {round(timer() - start_time1, 2)}')
+                print(f'time (1):           {round(search_time1, 2)} / {round(timer() - start_time1, 2)}')
+                print(len(board_state_explored_WHITE))
                 continue
 
             if game_mode == 'AI2':
                 if turn == AI2:
                     start_time2 = timer()
-                    board_state, moves, n_white_pieces, n_red_pieces, turn, board_state_explored, nodes_explored = ai_move(board_state, board_state_explored, turn, RECURSION_LIMIT2)
-                    
+                    board_state, moves, n_white_pieces, n_red_pieces, turn, board_state_explored_new, nodes_explored = ai_move(board_state, board_state_explored_RED, turn, RECURSION_LIMIT_RED)
+                    board_state_explored_RED += board_state_explored_new
                     search_time2 += timer() - start_time2
                     nodes_explored2 += nodes_explored
-                    print('--- AI 2 ---')
+                    move_count2 += 1
+                    print(f'--- AI RED move # {move_count2} ---')
                     print(f'nodes explored(2):  {nodes_explored2} / {nodes_explored}')
                     print(f'time (2):           {round(search_time2, 2)} / {round(timer() - start_time2, 2)}')
             
