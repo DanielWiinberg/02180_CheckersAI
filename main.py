@@ -72,7 +72,6 @@ def main():
     board_state = board.create_pieces_board() 
     board_state_explored_WHITE = []
     board_state_explored_RED = []
-
     moves = []
     select = []
     n_white_pieces = N_PIECES
@@ -80,7 +79,7 @@ def main():
     turn = RED
     AI = WHITE
     AI2 = RED
-    game_mode = 'AI2'
+    game_mode = '*'
     search_time1 = 0
     nodes_explored1 = 0
     move_count1 = 0

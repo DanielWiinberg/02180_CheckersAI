@@ -6,13 +6,14 @@ from .piece import Piece
 def draw_checker_board(win):
     #print(self.board)
     win.fill(DARK_BLUE)
+    pygame.draw.rect(win, WHITE, (EDGE_SIZE-3,EDGE_SIZE-3,WIDTH_BOARD+6, HEIGHT_BOARD+6))
     pygame.draw.rect(win, BROWN, (EDGE_SIZE,EDGE_SIZE,WIDTH_BOARD, HEIGHT_BOARD))
     for row in range(ROWS):
         for col in range(row % 2, COLS, 2):
             pygame.draw.rect(win, BEIGE, (row*SQUARE_SIZE+EDGE_SIZE, col *SQUARE_SIZE+EDGE_SIZE, SQUARE_SIZE, SQUARE_SIZE))
 
                 
-   
+
 
 def create_pieces_board():
     board_matrix = [[0] * (COLS) for _ in range(ROWS)]
