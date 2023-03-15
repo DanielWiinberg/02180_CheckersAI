@@ -94,7 +94,11 @@ def max_func_graph(board_state, board_state_explored, max_player, turn_color, de
             nodes_explored += 1
             new_board_state = deepcopy(board_state)
             new_board_state, _ = list(mv.move(new_board_state, piece, actions, action))
+            #print('')
+            #print((turn_color,new_board_state))
+            #print((turn_color,new_board_state) in board_state_explored)
             if (turn_color,new_board_state) in board_state_explored:
+                #print("Board state visited")
                 continue
             board_state_explored.append((turn_color,new_board_state))
             b_score,board_state_explored, nodes_explored = min_func_graph(new_board_state, board_state_explored, max_player, mv.change_turn(turn_color), depth + 1, depth_limit, nodes_explored) 
@@ -120,8 +124,9 @@ def min_func_graph(board_state, board_state_explored, max_player, turn_color, de
             nodes_explored += 1
             new_board_state = deepcopy(board_state)
             new_board_state, _ = list(mv.move(new_board_state, piece, actions, action))
-            
+            #print((turn_color,new_board_state) in board_state_explored)
             if (turn_color,new_board_state) in board_state_explored:
+                #print("Board state visited")
                 continue
             board_state_explored.append((turn_color,new_board_state))
             b_score,board_state_explored, nodes_explored = max_func_graph(new_board_state, board_state_explored, max_player, mv.change_turn(turn_color), depth + 1, depth_limit, nodes_explored) 
