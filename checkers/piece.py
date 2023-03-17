@@ -1,5 +1,5 @@
 import pygame
-from .constants import RED, WHITE, SQUARE_SIZE, GREY, CROWN, EDGE_SIZE,PADDING,OUTLINE
+from .constants import RED, WHITE, SQUARE_SIZE, GREY, CROWN, PADDING,OUTLINE
 
 class Piece:
 
@@ -15,11 +15,6 @@ class Piece:
         self.king = king
         self.x = 0
         self.y = 0
-        self.calc_pos()
-
-    def calc_pos(self):
-        self.x = SQUARE_SIZE * self.col + SQUARE_SIZE // 2 + EDGE_SIZE
-        self.y = SQUARE_SIZE * self.row + SQUARE_SIZE // 2 + EDGE_SIZE
 
     def make_king(self):
         self.king = True
@@ -31,10 +26,6 @@ class Piece:
         if self.king:
             win.blit(CROWN, (self.x - CROWN.get_width()//2, self.y - CROWN.get_height()//2))
 
-    def move(self, row, col):
-        self.row = row
-        self.col = col
-        self.calc_pos()
 
     def __repr__(self):
         return str(self.name)
