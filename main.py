@@ -15,8 +15,8 @@ from algorithms.helper_functions import *
 
 
 FPS = 60
-RECURSION_LIMIT_WHITE = 2
-RECURSION_LIMIT_RED = 3 
+RECURSION_LIMIT_WHITE = 3
+RECURSION_LIMIT_RED = 2
 
 WIN = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption('Checkers')
@@ -36,7 +36,7 @@ def update(board_matrix, moves, n_white_pieces, n_red_pieces):
       mv.draw_posible_moves(WIN,moves) 
     pygame.display.update()
 
-def ai_move(board_state, board_state_explored, turn, termination, ai_method='minimax_graph'):
+def ai_move(board_state, board_state_explored, turn, termination, ai_method='minimax'):
     n_white_pieces = len( get_pieces(board_state, WHITE) )
     n_red_pieces = len( get_pieces(board_state, RED) )
 
@@ -90,12 +90,12 @@ def main():
 
     while run:
         clock.tick(FPS) 
-        #pygame.time.wait(500)
+        pygame.time.wait(1000)
         update(board_state, moves, n_white_pieces, n_red_pieces)
         
         board_state_explored.append(get_board_signature(board_state))
         
-        print("Number of total states explored: {0}".format(len(board_state_explored)))
+        #print("Number of total states explored: {0}".format(len(board_state_explored)))
         if end_of_game(board_state, turn):
             print("WE HAVE A WINNER!!!")
             #pygame.time.wait(2000)
@@ -116,7 +116,7 @@ def main():
         else:   
             if turn == AI:
                 start_time1 = timer()
-                board_state, moves, n_white_pieces, n_red_pieces, turn, nodes_explored = ai_move(board_state, board_state_explored, turn, RECURSION_LIMIT_WHITE)
+                board_state, moves, n_white_pieces, n_red_pieces, turn, nodes_explored = ai_move(board_state, board_state_explored, turn, RECURSION_LIMIT_WHITE, ai_method='minimax')
                 search_time1 += timer() - start_time1
                 nodes_explored1 += nodes_explored
                 move_count1 += 1
@@ -124,13 +124,13 @@ def main():
                 print(f'nodes explored(1):  {nodes_explored1} / {nodes_explored}')
                 print(f'time (1):           {round(search_time1, 2)} / {round(timer() - start_time1, 2)}')
                 print(len(board_state_explored_WHITE))
-                continue
+                #continue
 
             if game_mode == 'AI2':
                 if turn == AI2:
                     start_time2 = timer()
 
-                    board_state, moves, n_white_pieces, n_red_pieces, turn, nodes_explored = ai_move(board_state, board_state_explored, turn, RECURSION_LIMIT_RED)
+                    board_state, moves, n_white_pieces, n_red_pieces, turn, nodes_explored = ai_move(board_state, board_state_explored, turn, RECURSION_LIMIT_RED, ai_method='minimax')
                     search_time2 += timer() - start_time2
                     nodes_explored2 += nodes_explored
                     move_count2 += 1

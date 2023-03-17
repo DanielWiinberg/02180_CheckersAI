@@ -13,8 +13,8 @@ def mini_max(board_state, max_player, turn_color, depth, depth_limit):
     if not max_actions:
         return None, None, nodes_explored
     max_action = max_actions[0]
-    # print('! max_score: ', max_score)
-    # print('! max_action: ', max_action)
+    print('! max_score: ', max_score)
+    print('! max_action: ', max_action)
     return max_score, max_action, nodes_explored
 
 def max_func(board_state, max_player, turn_color, depth, depth_limit, nodes_explored):

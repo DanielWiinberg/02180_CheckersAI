@@ -42,24 +42,24 @@ def get_kings(board_state, turn_color):
 
 def get_backline_pieces(board_state, turn_color):
     if turn_color == RED:
-        return len( [column for column in board_state[0] if column != 0] )
+        return np.shape([column for column in board_state[ROWS - 1] if column != 0 and column.color == RED])[0]
     if turn_color == WHITE:
-        return len( [column for column in board_state[ROWS - 1] if column != 0] )
+        return np.shape([column for column in board_state[0] if column != 0 and column.color == WHITE])[0]
 
 
 def utility_function(board_state, turn_color):
     # Weights, normal pieces are weight 1
-    king_weight = 2
+    king_weight = 0.5
     backline_weight = 100
     
     kings_red = get_kings(board_state, RED)
     backline_pieces_red = get_backline_pieces(board_state, RED)
-    pieces_red = len( get_pieces(board_state, RED) )
-    
+    pieces_red = np.shape(get_pieces(board_state, RED))[0]
+
     kings_white = get_kings(board_state, WHITE)
     backline_pieces_white = get_backline_pieces(board_state, WHITE)
-    pieces_white = len( get_pieces(board_state, WHITE) )
-    
+    pieces_white = np.shape(get_pieces(board_state, WHITE))[0]
+
     util_value_red = ((kings_red - kings_white) * king_weight +
                       (pieces_red - pieces_white))
     
@@ -70,6 +70,7 @@ def utility_function(board_state, turn_color):
         return util_value_red
     else:
         return util_value_white
+
 
 
 def get_board_signature(board_state):
