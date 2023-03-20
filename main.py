@@ -15,8 +15,20 @@ from algorithms.helper_functions import *
 
 
 FPS = 60
+
+
+# White player is always IA agent Red can be selected between AI or Human
+RED_PLAYER = 'AI' 
+# RED_PLAYER = 'HUMAN' # First turn is asign to red player
+
+# Algorithm used by each player --> ('minimax', 'minimax_graph', 'alpha_beta')
+WHITE_PLAYER_ALGORITHM = 'minimax'
+RED_PLAYER_ALGORITHM = 'minimax'
+
+# Depth limit for each player:
 RECURSION_LIMIT_WHITE = 3
-RECURSION_LIMIT_RED = 2
+RECURSION_LIMIT_RED = 3
+
 
 WIN = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption('Checkers')
@@ -79,7 +91,6 @@ def main():
     turn = RED
     AI = WHITE
     AI2 = RED
-    game_mode = 'AI2'
     search_time1 = 0
     nodes_explored1 = 0
     move_count1 = 0
@@ -89,8 +100,9 @@ def main():
     
 
     while run:
-        clock.tick(FPS) 
-        pygame.time.wait(1000)
+        clock.tick(FPS)
+        if  RED_PLAYER == 'AI':
+            pygame.time.wait(800)
         update(board_state, moves, n_white_pieces, n_red_pieces)
         
         board_state_explored.append(get_board_signature(board_state))
@@ -116,7 +128,7 @@ def main():
         else:   
             if turn == AI:
                 start_time1 = timer()
-                board_state, moves, n_white_pieces, n_red_pieces, turn, nodes_explored = ai_move(board_state, board_state_explored, turn, RECURSION_LIMIT_WHITE, ai_method='minimax')
+                board_state, moves, n_white_pieces, n_red_pieces, turn, nodes_explored = ai_move(board_state, board_state_explored, turn, RECURSION_LIMIT_WHITE, WHITE_PLAYER_ALGORITHM)
                 search_time1 += timer() - start_time1
                 nodes_explored1 += nodes_explored
                 move_count1 += 1
@@ -126,11 +138,11 @@ def main():
                 print(len(board_state_explored_WHITE))
                 #continue
 
-            if game_mode == 'AI2':
+            if RED_PLAYER == 'AI':
                 if turn == AI2:
                     start_time2 = timer()
 
-                    board_state, moves, n_white_pieces, n_red_pieces, turn, nodes_explored = ai_move(board_state, board_state_explored, turn, RECURSION_LIMIT_RED, ai_method='minimax')
+                    board_state, moves, n_white_pieces, n_red_pieces, turn, nodes_explored = ai_move(board_state, board_state_explored, turn, RECURSION_LIMIT_RED, RED_PLAYER_ALGORITHM)
                     search_time2 += timer() - start_time2
                     nodes_explored2 += nodes_explored
                     move_count2 += 1
@@ -143,7 +155,7 @@ def main():
                     run = False
                 
                 else:
-                    if event.type == pygame.MOUSEBUTTONDOWN and not game_mode == 'AI2':
+                    if event.type == pygame.MOUSEBUTTONDOWN and not RED_PLAYER == 'AI':
                         pos = pygame.mouse.get_pos()
                         row, col = get_row_col_from_mouse(pos)
                         
